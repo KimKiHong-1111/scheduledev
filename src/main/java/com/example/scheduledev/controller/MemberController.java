@@ -32,7 +32,7 @@ public class MemberController {
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
-    //아이디찾기?
+    //단건 조회 API
     @GetMapping("/{id}")
     public ResponseEntity<MemberResponseDto> findById(@PathVariable Long id) {
 

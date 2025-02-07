@@ -10,7 +10,7 @@ public class CreateScheduleRequestDto {
 
     private final String username;
 
-    public CreateSchduleRequestDto(String title, String contents, String username) {
+    public CreateScheduleRequestDto(String title, String contents, String username) {
         this.title = title;
         this.contents = contents;
         this.username = username;

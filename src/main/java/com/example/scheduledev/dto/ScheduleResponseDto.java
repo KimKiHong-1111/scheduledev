@@ -17,6 +17,10 @@ public class ScheduleResponseDto {
         this.contents = contents;
     }
 
+    public ScheduleResponseDto() {
+
+    }
+
     public static ScheduleResponseDto toDto(Schedule schedule) {
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents());
     }
