@@ -1,20 +1,17 @@
 package com.example.scheduledev.service;
 
 import com.example.scheduledev.dto.ScheduleResponseDto;
-import com.example.scheduledev.dto.ScheduleWithAgeResponseDto;
+import com.example.scheduledev.dto.ScheduleWithUsernameResponseDto;
 import com.example.scheduledev.dto.UpdateScheduleRequestDto;
 import com.example.scheduledev.entity.Schedule;
 import com.example.scheduledev.entity.Member;
 import com.example.scheduledev.repository.MemberRepository;
 import com.example.scheduledev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +24,8 @@ public class ScheduleService {
     public ScheduleResponseDto save(String title, String contents, String username) {
         //멤버조회
         Member findMember = memberRepository.findMemberByUsernameOrElseThrow(username);
-
-        Schedule schedule = new Schedule(title,contents);
-        schedule.setMember(findMember);
-
+        //findMember 객체를 다 넣는 것.
+        Schedule schedule = new Schedule(findMember, title, contents);
         scheduleRepository.save(schedule);
 
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents());
@@ -43,36 +38,38 @@ public class ScheduleService {
 
     //나이가 아니라 다른요소 추가 필요
     //유저명,제목,할일
-    public ScheduleWithAgeResponseDto findById(Long id) {
+    public ScheduleWithUsernameResponseDto findById(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         Member writer = findSchedule.getMember();
-        return new ScheduleWithAgeResponseDto(findSchedule.getTitle(), findSchedule.getContents(), writer.getUsername());
+        return new ScheduleWithUsernameResponseDto(findSchedule.getTitle(), findSchedule.getContents(), writer.getUsername());
     }
 
     //수정
     @Transactional
-    public ScheduleResponseDto update(Long id,String title, String name,String pw, String contents) {
-        //필수값 검증
-        if (pw == null || contents == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The pw and contents are required values.");
+    public ScheduleResponseDto update(Long id, UpdateScheduleRequestDto requestDto) {
+//        //필수값 검증
+//        if (password == null || contents == null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The pw and contents are required values.");
+//        }
+//        validPassword(id,password);
+//
+//        int updatedRow = scheduleRepository.updateSchedule(id,email,title,,pw,contents);
+//
+//        // NPE 방지
+//        if (updatedRow == 0) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist name = " + id);
+//        }
+
+        //  schedule 수정 머리에 쥐가난다.......
+        // id값을 이용해 스케줄에 있는 멤버의 이메일 비밀번호를 대조해서 맞으면 업데이트한다.(구현)
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        Member member = schedule.getMember();
+        if (!member.getEmail().equals(requestDto.getEmail()) || !member.getPassword().equals(requestDto.getPassword())) {
+            //요기는 나중에 예외처리 로직을 넣어라!
         }
-        validPassword(id,pw);
-
-        int updatedRow = repository.updateSchedule(id,title,name,pw,contents);
-
-        // NPE 방지
-        if (updatedRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist name = " + id);
-        }
-
-        //  schedule 수정
-        Schedule schedule = repository.findScheduleByIdOrElseThrow(id);
-
+        schedule.update(requestDto.getTitle(),requestDto.getContents());
         return new ScheduleResponseDto(schedule);
-    }
 
-    private void validPassword(Long id, String password) {
-        scheduleRepository.findByIdAndPassword(id,password);
     }
 
     //이 부분 아예 삭제하는 것이 아닌 소프트 딜리트로 변경해보기.

@@ -1,7 +1,7 @@
 package com.example.scheduledev.controller;
 
 import com.example.scheduledev.dto.ScheduleResponseDto;
-import com.example.scheduledev.dto.ScheduleWithAgeResponseDto;
+import com.example.scheduledev.dto.ScheduleWithUsernameResponseDto;
 import com.example.scheduledev.dto.CreateScheduleRequestDto;
 import com.example.scheduledev.dto.UpdateScheduleRequestDto;
 import com.example.scheduledev.service.ScheduleService;
@@ -37,13 +37,13 @@ public class ScheduleController {
 
     //일정표 단건 조회 API
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleWithAgeResponseDto> findById(@PathVariable Long id) {
-        ScheduleWithAgeResponseDto scheduleWithAgeResponseDto = scheduleService.findById(id);
+    public ResponseEntity<ScheduleWithUsernameResponseDto> findById(@PathVariable Long id) {
+        ScheduleWithUsernameResponseDto scheduleWithUsernameResponseDto = scheduleService.findById(id);
 
-        return new ResponseEntity<>(scheduleWithAgeResponseDto,HttpStatus.OK);
+        return new ResponseEntity<>(scheduleWithUsernameResponseDto,HttpStatus.OK);
     }
 
-    //일정표 수정 API
+    //일정표 수정 API 구현하고싶다!! 요거만하면 일단 lv4는 끝날거같다.
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> update(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto) {
         ScheduleResponseDto updatedSchedule = scheduleService.update(id, requestDto);

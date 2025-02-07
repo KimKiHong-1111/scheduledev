@@ -33,15 +33,16 @@ public class Schedule extends BaseEntity {
     }
 
     //id는 자동생성되기 때문에 생성자 만들 필요 X
-    public Schedule(String title, String contents) {
+    public Schedule(Member member,String title, String contents) {
+        this.member = member;
         this.title = title;
         this.contents = contents;
     }
 
-    //멤버 세터
-    public void setMember(Member member) {
-        this.member = member;
-    }
+//    //멤버 세터
+//    public void setMember(Member member) {
+//        this.member = member;
+//    }
 
     //수정가능하도록 메서드추가
     public void update(String title,String contents) {
