@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/boards")
+@RequestMapping("/schedules")
 @RequiredArgsConstructor
-public class BoardController {
+public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
