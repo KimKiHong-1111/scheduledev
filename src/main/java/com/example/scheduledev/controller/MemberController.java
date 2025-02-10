@@ -4,6 +4,7 @@ import com.example.scheduledev.dto.*;
 import com.example.scheduledev.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,14 @@ public class MemberController {
         session.setAttribute("token",loginResponseDto.getId());
         return new ResponseEntity<>(loginResponseDto,HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+        LoginResponseDto response = memberService.memberLogin(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+        return ResponseEntity.ok(response);
+    }
+
+
 
     //단건 조회 API
     @GetMapping("/{id}")

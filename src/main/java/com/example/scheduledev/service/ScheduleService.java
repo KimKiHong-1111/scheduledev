@@ -65,7 +65,6 @@ public class ScheduleService {
 
     }
 
-    //이 부분 아예 삭제하는 것이 아닌 소프트 딜리트로 변경해보기.
     public void delete(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         scheduleRepository.delete(findSchedule);
