@@ -1,5 +1,7 @@
 package com.example.scheduledev.service;
 
+import com.example.scheduledev.config.PasswordEncoder;
+import com.example.scheduledev.dto.LoginResponseDto;
 import com.example.scheduledev.dto.MemberResponseDto;
 import com.example.scheduledev.dto.SignUpResponseDto;
 import com.example.scheduledev.entity.Member;
@@ -10,13 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.List;
+
+//기능구현은 서비스에다가 하기!
+
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder encoder;
 
     //회원가입 순서 유저명,이메일,비밀번호
     public SignUpResponseDto signUp(String username, String email, String password) {
@@ -28,19 +34,32 @@ public class MemberService {
         return new SignUpResponseDto(savedMember.getId(),savedMember.getEmail(),savedMember.getPassword());
     }
 
-    //아이디 찾기
+
+    //전체찾기 회원 전체 조회
+    public List<LoginResponseDto> findAll() {
+        return memberRepository.findAll().stream().map(LoginResponseDto::toDto).toList();
+    }
+
+
+    //멤버 로그인
+    public LoginResponseDto memberLogin(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "존재하지 않는 이메일 정보입니다."));
+
+        if(!encoder.matches(password, member.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        };
+
+        return new LoginResponseDto(member.getId(), member.getUsername(), member.getEmail());
+    }
+
+
+    //아이디로 조회하기
     public MemberResponseDto findById(Long id) {
 
-        Optional<Member> optionalMember = memberRepository.findById(id);
+        Member member = memberRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"조회된 정보가 없습니다."));
+        return new MemberResponseDto(member.getId(),member.getUsername(),member.getEmail());
 
-        //NPE방지
-        if (optionalMember.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"존재하지않는 id = " + id);
-        }
-        Member findMember = optionalMember.get();
-
-        //나이말고 다른 요소 조회되게끔 변경 필요
-        return new MemberResponseDto(findMember.getUsername(),findMember.getEmail());
 
     }
 
@@ -49,13 +68,23 @@ public class MemberService {
     @Transactional
     public void updatePassword(Long id, String oldPassword, String newPassword) {
 
-        Member findMember = memberRepository.findByIdOrElseThrow(id);
+        Member findMember = memberRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED,"수정할 수 있는 데이터가 없습니다."));
 
         if (!findMember.getPassword().equals(oldPassword)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.");
         }
 
         findMember.updatePassword(newPassword);
+    }
+
+    //회원탈퇴
+    public void deleteMember(Long id, String password) {
+        Member member = memberRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"삭제할 수 있는 데이터가 없습니다."));
+
+        if (!encoder.matches(password, member.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"비밀번호가 일치하지 않습니다.");
+        }
+        memberRepository.deleteById(member.getId());
     }
 
 }

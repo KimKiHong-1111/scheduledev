@@ -1,4 +1,4 @@
-package com.example.scheduledev.filter;
+package com.example.scheduledev.config.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
 
     // 인증을 하지 않아도될 URL Path 배열
-    private static final String[] WHITE_LIST = {"/","/user/signup","/login","/logout"};
+    private static final String[] WHITE_LIST = {"/members/signup","/members/login"};
 
     @Override
     public void doFilter(
@@ -37,10 +37,12 @@ public class LoginFilter implements Filter {
 
             // 로그인 확인 -> 로그인하면 session에 값이 저장되어 있다는 가정.
             // 세션이 존재하면 가져온다. 세션이 없으면 session = null
+            // 객체를 불러와야된다 ?
             HttpSession session = httpRequest.getSession(false);
 
             // 로그인하지 않은 사용자인 경우
-            if (session == null || session.getAttribute("sessionKey값") == null) {
+
+            if (session == null || session.getAttribute("token") == null) {
                 throw new RuntimeException("로그인 해주세요.");
             }
             // 로그인 성공 로직

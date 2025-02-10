@@ -39,11 +39,6 @@ public class Schedule extends BaseEntity {
         this.contents = contents;
     }
 
-//    //멤버 세터
-//    public void setMember(Member member) {
-//        this.member = member;
-//    }
-
     //수정가능하도록 메서드추가
     public void update(String title,String contents) {
         this.title=title;

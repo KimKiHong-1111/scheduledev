@@ -1,10 +1,9 @@
 package com.example.scheduledev.controller;
 
-import com.example.scheduledev.dto.MemberResponseDto;
-import com.example.scheduledev.dto.SignUpRequestDto;
-import com.example.scheduledev.dto.SignUpResponseDto;
-import com.example.scheduledev.dto.UpdatePasswordRequestDto;
+import com.example.scheduledev.dto.*;
 import com.example.scheduledev.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     //회원가입 API
     //이름,이메일,비밀번호
@@ -30,6 +29,18 @@ public class MemberController {
                 );
 
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
+    }
+    //로그인 구현 필요
+    //애매하면 포스트
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(HttpServletRequest request,
+                                                  @RequestBody LoginRequestDto loginRequestDto) {
+        LoginResponseDto loginResponseDto = memberService.memberLogin(loginRequestDto.getEmail(),loginRequestDto.getPassword());
+
+        HttpSession session = request.getSession(true);
+        //member의 id
+        session.setAttribute("token",loginResponseDto.getId());
+        return new ResponseEntity<>(loginResponseDto,HttpStatus.OK);
     }
 
     //단건 조회 API

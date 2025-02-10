@@ -5,6 +5,8 @@ import com.example.scheduledev.dto.ScheduleWithUsernameResponseDto;
 import com.example.scheduledev.dto.CreateScheduleRequestDto;
 import com.example.scheduledev.dto.UpdateScheduleRequestDto;
 import com.example.scheduledev.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,14 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-
+    //하나하나씩 테스트 해보기.
     //일정표 글 등록하기
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> save(@RequestBody CreateScheduleRequestDto requestDto) {
+    public ResponseEntity<ScheduleResponseDto> save(HttpServletRequest request, @RequestBody CreateScheduleRequestDto requestDto) {
+        HttpSession session = request.getSession();
+        Long memberId = (Long) session.getAttribute("token");
         ScheduleResponseDto scheduleResponseDto =
-                scheduleService.save(requestDto.getTitle(),requestDto.getContents(),requestDto.getUsername());
+                scheduleService.save(memberId,requestDto.getTitle(),requestDto.getContents(),requestDto.getUsername());
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
 
@@ -44,9 +48,10 @@ public class ScheduleController {
     }
 
     //일정표 수정 API 구현하고싶다!! 요거만하면 일단 lv4는 끝날거같다.
+    //
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> update(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto) {
-        ScheduleResponseDto updatedSchedule = scheduleService.update(id, requestDto);
+        ScheduleResponseDto updatedSchedule = scheduleService.updateSchedule(id, requestDto);
         return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);
     }
 

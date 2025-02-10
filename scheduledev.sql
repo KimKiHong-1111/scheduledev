@@ -3,7 +3,7 @@ use scheduledev;
 -- user 테이블 생성
 CREATE TABLE member(
     id BIGINT AUTO_INCREMENT PRIMARY KEY ,
-    name VARCHAR(255) NOT NULL ,
+    username VARCHAR(255) NOT NULL ,
     email VARCHAR(255) NOT NULL ,
     password VARCHAR(255) NOT NULL ,
     created_at TIMESTAMP NOT NULL ,

@@ -8,8 +8,10 @@ import com.example.scheduledev.entity.Member;
 import com.example.scheduledev.repository.MemberRepository;
 import com.example.scheduledev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,9 +23,15 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleResponseDto save(String title, String contents, String username) {
+    //일정등록
+    public ScheduleResponseDto save(Long memberId, String title, String contents, String username) {
         //멤버조회
-        Member findMember = memberRepository.findMemberByUsernameOrElseThrow(username);
+
+        //세션에 id가 저장되어있다
+        if (!memberRepository.existsById(memberId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 회원을 찾을 수 없습니다.");
+        }
+        Member findMember = memberRepository.getReferenceById(memberId);
         //findMember 객체를 다 넣는 것.
         Schedule schedule = new Schedule(findMember, title, contents);
         scheduleRepository.save(schedule);
@@ -33,7 +41,6 @@ public class ScheduleService {
 
     public List<ScheduleResponseDto> findAll() {
         return scheduleRepository.findAll().stream().map(com.example.scheduledev.dto.ScheduleResponseDto::toDto).toList();
-
     }
 
     //나이가 아니라 다른요소 추가 필요
@@ -46,26 +53,12 @@ public class ScheduleService {
 
     //수정
     @Transactional
-    public ScheduleResponseDto update(Long id, UpdateScheduleRequestDto requestDto) {
-//        //필수값 검증
-//        if (password == null || contents == null) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The pw and contents are required values.");
-//        }
-//        validPassword(id,password);
-//
-//        int updatedRow = scheduleRepository.updateSchedule(id,email,title,,pw,contents);
-//
-//        // NPE 방지
-//        if (updatedRow == 0) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist name = " + id);
-//        }
+    public ScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto requestDto) {
 
-        //  schedule 수정 머리에 쥐가난다.......
-        // id값을 이용해 스케줄에 있는 멤버의 이메일 비밀번호를 대조해서 맞으면 업데이트한다.(구현)
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"수정할 수 없습니다."));
         Member member = schedule.getMember();
         if (!member.getEmail().equals(requestDto.getEmail()) || !member.getPassword().equals(requestDto.getPassword())) {
-            //요기는 나중에 예외처리 로직을 넣어라!
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"일정은 작성자만 수정이 가능합니다.");
         }
         schedule.update(requestDto.getTitle(),requestDto.getContents());
         return new ScheduleResponseDto(schedule);
