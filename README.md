@@ -1,5 +1,29 @@
 # 일정관리 프로젝트
 
+#요구사항 확인하기
+#비기능적 요구사항
+#요구사항이 아닌것
+-탈퇴는 구현하지 않는다.
+-로그인 로그아웃 구현 / 탈퇴는 미지원
+#API Design 
+-400 Bad request
+-404 Not found
+kakao.api명세서 확인하기
+-api path
+-api query param(type,예시)
+-api response(status code, 예시)
+
+text
+POST api/v1/user/login
+header: authorization
+예시:Authorization{key}
+
+
+#ERD mermaid문법
+사진으로 캡처하기보다는 sql 쿼리작성하듯이 erd를 하면된다.
+
+
+
 ### Lv 0. API 명세 및 ERD 작성   `필수`
 
 - [ ]  **API 명세서 작성하기**
