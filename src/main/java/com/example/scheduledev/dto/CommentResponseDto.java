@@ -24,7 +24,13 @@ public class CommentResponseDto {
         this.createdAt = createdAt;
     }
 
-
+    //이게 없다면 생기는 단점??
+    //장점 1. 객체 생성 없이 호출 가능
+    //장점 2. 불필요한 객체 생성을 방지 (메모리 절약)
+    //장점 3. 유틸리티 성격의 메서드에 적합
+    //장점 4. 다른 클래스에서 쉽게 재사용 가능
+    //장점 5. 객체 지향적인 접근 유지 (OOP 위배 X)
+    //강의에 있었다.
     public static CommentResponseDto toDto(Comment comment) {
         return new CommentResponseDto(
                 comment.getId(),

@@ -8,6 +8,7 @@ import com.example.scheduledev.entity.Member;
 import com.example.scheduledev.repository.MemberRepository;
 import com.example.scheduledev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
@@ -26,7 +28,6 @@ public class ScheduleService {
     //일정등록
     public ScheduleResponseDto save(Long memberId, String title, String contents, String username) {
         //멤버조회
-
         //세션에 id가 저장되어있다
         if (!memberRepository.existsById(memberId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 회원을 찾을 수 없습니다.");
@@ -46,7 +47,7 @@ public class ScheduleService {
     //나이가 아니라 다른요소 추가 필요
     //유저명,제목,할일
     public ScheduleWithUsernameResponseDto findById(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"수정할 수 없습니다."));
         Member writer = findSchedule.getMember();
         return new ScheduleWithUsernameResponseDto(findSchedule.getTitle(), findSchedule.getContents(), writer.getUsername());
     }
@@ -62,11 +63,10 @@ public class ScheduleService {
         }
         schedule.update(requestDto.getTitle(),requestDto.getContents());
         return new ScheduleResponseDto(schedule);
-
     }
 
     public void delete(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"수정할 수 없습니다."));
         scheduleRepository.delete(findSchedule);
     }
 }

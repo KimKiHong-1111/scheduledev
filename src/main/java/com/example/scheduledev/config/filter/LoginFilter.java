@@ -41,7 +41,6 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             // 로그인하지 않은 사용자인 경우
-
             if (session == null || session.getAttribute("token") == null) {
                 throw new RuntimeException("로그인 해주세요.");
             }

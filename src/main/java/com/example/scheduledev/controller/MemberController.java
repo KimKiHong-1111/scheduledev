@@ -28,29 +28,20 @@ public class MemberController {
                         requestDto.getEmail(),
                         requestDto.getPassword()
                 );
-
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
-    //로그인 구현 필요
-    //애매하면 포스트
+
+    //로그인 구현
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(HttpServletRequest request,
-                                                  @RequestBody LoginRequestDto loginRequestDto) {
+                                                  @Valid @RequestBody LoginRequestDto loginRequestDto) {
         LoginResponseDto loginResponseDto = memberService.memberLogin(loginRequestDto.getEmail(),loginRequestDto.getPassword());
 
         HttpSession session = request.getSession(true);
-        //member의 id
+        //member의 id를 불러온다.
         session.setAttribute("token",loginResponseDto.getId());
         return new ResponseEntity<>(loginResponseDto,HttpStatus.OK);
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
-        LoginResponseDto response = memberService.memberLogin(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        return ResponseEntity.ok(response);
-    }
-
-
 
     //단건 조회 API
     @GetMapping("/{id}")
