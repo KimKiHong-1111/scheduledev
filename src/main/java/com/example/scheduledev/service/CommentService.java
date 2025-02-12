@@ -61,25 +61,24 @@ CommentService {
     //댓글 수정 기능
     @Transactional
     public void updateComment(Long id, String content, Long memberId){
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "수정할 수 있는 댓글이 없습니다."));
-
-        if(!memberId.equals(comment.getMember().getId())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "댓글 작성자만 수정이 가능합니다.");
-        }
-
+        Comment comment = validationId(id,memberId);
         comment.update(content);
     }
 
-    /*컨트롤 쉬프트 슬레쉬*/
+
     //댓글 삭제 기능
     public void deleteComment(Long id, Long memberId){
+        Comment comment = validationId(id,memberId);
+        commentRepository.delete(comment);
+    }
+
+    /*id조회 메서드*/
+    private Comment validationId(Long id, Long memberId ) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 수 있는 댓글이 없습니다."));
         if(!memberId.equals(comment.getMember().getId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "댓글 작성자만 수정이 가능합니다.");
         }
-
-        commentRepository.deleteById(id);
+        return comment;
     }
 
-    /*비밀번호 검증*/
 }
