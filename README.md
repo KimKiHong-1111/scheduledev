@@ -15,27 +15,38 @@
         > 
         > [Document your APIs in Postman | Postman Learning Center](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/)
 
-
-
-|  기능                |Method |URL        |request |response|상태코드|
-|------                 |-------|-----      |------- |------- |-------  |
-| 일정등록              |POST   |schedule   |요청body|등록정보|200:정상등록|
-| 전체일정 조회         |GET    |schedule   |요청param|다건 응답정보|200:정상조회|
-| 선택일정조회          |GET    |schedule/{schedule/id} |요청param|단건 응답 정보|200:정상조회|
-| 선택한 일정 수정하기  |PUT    |schedule/{schedule/id} |요청body|수정정보|200:정상수정|
-| 선택한 일정 삭제하기  |DELETE |schedule/{schedule/id} |요청param|-|200:정상삭제|
-
-
-
-
+Schedule
 
 |  기능                |Method |URL        |request |response|상태코드|
 |------                 |-------|-----      |------- |------- |-------  |
-| 회원가입              |POST   |schedule   |요청body|등록정보|200:정상등록|
-| 전체일정 조회         |GET    |schedule   |요청param|다건 응답정보|200:정상조회|
-| 선택일정조회          |GET    |schedule/{schedule/id} |요청param|단건 응답 정보|200:정상조회|
-| 선택한 일정 수정하기  |PUT    |schedule/{schedule/id} |요청body|수정정보|200:정상수정|
-| 선택한 일정 삭제하기  |DELETE |schedule/{schedule/id} |요청param|-|200:정상삭제|
+| 일정등록              |POST   |schedules/create   |요청body|등록정보|200:정상등록|
+| 전체일정 조회         |GET    |schedules/   |요청param|다건 응답정보|200:정상조회|
+| 선택일정조회          |GET    |schedules/{id} |요청param|단건 응답 정보|200:정상조회|
+| 선택한 일정 수정하기  |PUT    |schedules/{id} |요청body|수정정보|200:정상수정|
+| 선택한 일정 삭제하기  |DELETE |schedules/{id} |요청param|-|200:정상삭제|
+
+
+
+Member
+
+|  기능                |Method |URL        |request |response|상태코드|
+|------                 |-------|-----      |------- |------- |-------  |
+| 회원가입              |POST   |members/signup   |요청body|등록정보|200:정상등록|
+|로그인             |POST   |members/login   |요청body|등록정보|200:정상등록|
+| 회원전체 조회         |GET    |members   |요청param|다건 응답정보|200:정상조회|
+| 선택회원조회          |GET    |members/{members/id} |요청param|단건 응답 정보|200:정상조회|
+| 비밀번호 수정하기  |PUT    |members/{members/id} |요청body|수정정보|200:정상수정|
+| 회원 삭제하기  |DELETE |members/{members/id} |요청param|-|200:정상삭제|
+
+
+Comment
+|  기능                |Method |URL        |request |response|상태코드|
+|------                 |-------|-----      |------- |------- |-------  |
+| 댓글작성              |POST   |comments   |요청body|등록정보|200:정상등록|
+| 댓글작성 조회         |GET    |comments   |요청param|다건 응답정보|200:정상조회|
+| 선택댓글작성조회          |GET    |comments/{comments/id} |요청param|단건 응답 정보|200:정상조회|
+| 선택한 댓글 수정하기  |PUT    |comments/{comments/id} |요청body|수정정보|200:정상수정|
+| 선택한 댓글 삭제하기  |DELETE |comments/{comments/id} |요청param|-|200:정상삭제|
 
         
         
