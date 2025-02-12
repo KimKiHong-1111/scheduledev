@@ -48,8 +48,6 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleWithUsernameResponseDto,HttpStatus.OK);
     }
 
-    //일정표 수정 API 구현하고싶다!! 요거만하면 일단 lv4는 끝날거같다.
-    //
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> update(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto) {
         ScheduleResponseDto updatedSchedule = scheduleService.updateSchedule(id, requestDto);
@@ -57,7 +55,6 @@ public class ScheduleController {
     }
 
     //일정표 삭제 API
-    //소프트 딜리트 구현 시  put 으로 바꿀것.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
 

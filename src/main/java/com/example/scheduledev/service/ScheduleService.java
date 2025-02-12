@@ -65,6 +65,7 @@ public class ScheduleService {
         return new ScheduleResponseDto(schedule);
     }
 
+    //삭제
     public void delete(Long id) {
         Schedule findSchedule = scheduleRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"수정할 수 없습니다."));
         scheduleRepository.delete(findSchedule);
